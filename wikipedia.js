@@ -1,6 +1,13 @@
 const cheerio = require('cheerio');
 const request = require('request');
-const mainURL = "https://en.wikipedia.org/wiki/V";
+const fs = require("fs");
+let xlsx = require("xlsx");
+let writedata = require("./abc.json");
+const mainURL =
+{
+    url: 'https://en.wikipedia.org/wiki/V',
+    timeout:1000
+};
 request(mainURL, cb);
 
 function cb(error,response,html)
@@ -8,7 +15,10 @@ function cb(error,response,html)
     console.log(response && response.statusCode);
     try
     {
-        extractinfo(html);
+        let information = extractinfo(html);
+        let wikiv = information;
+        let data = JSON.stringify(wikiv);
+        fs.writeFileSync("wikidata.json",data);
     }
     catch(error)
     {
@@ -24,7 +34,8 @@ function extractinfo(html)
     let history = select(para[1]).text().trim() + select(para[2]).text().trim()+ select(para[3]).text().trim()+ select(para[4]).text().trim();
     let letters = select(para[5]).text().trim() + select(para[6]).text().trim()+select(tables[0]).text().trim() +select(para[7]).text().trim() + select(para[8]).text().trim();
     let namesinotherlanguages =select(tables[1]).text().trim() +select(para[8]).text().trim();
-    console.log("HISTORY: ",history);
-    console.log("LETTERS: ",letters);
-    console.log("NAMES IN OTHER LANGUAGES: ",namesinotherlanguages);
+    let mainarr = [history];
+    mainarr.push(letters);
+    mainarr.push(namesinotherlanguages);
+    return mainarr;
 }
