@@ -1,1 +1,1 @@
-# collegedunia_scraper
+# SCRAPER IN JS
